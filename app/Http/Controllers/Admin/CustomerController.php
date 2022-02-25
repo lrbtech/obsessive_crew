@@ -141,19 +141,13 @@ class CustomerController extends Controller
             })
             ->addColumn('status', function ($booking) {
                 if ($booking->status == 0) {
-                    return '<td>Order Placed</td>';
-                } 
+                    return '<td>Booking Accepted</td>';
+                }
                 elseif ($booking->status == 1) {
-                    return '<td>Order Accepted</td>';
-                }
-                elseif ($booking->status == 2) {
-                    return '<td>Received</td>';
-                }
-                elseif ($booking->status == 3) {
                     return '<td>Processing</td>';
                 }
-                elseif ($booking->status == 4) {
-                    return '<td>Delivered</td>';
+                elseif ($booking->status == 2) {
+                    return '<td>Completed</td>';
                 }
             })
             ->addColumn('booking_date', function ($booking) {

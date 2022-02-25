@@ -41,11 +41,11 @@
                     <td><a>{{$row->description}}</a></td>
                     <td class="w-40">
                         @if($row->send_to == 1)
-                        <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> All Shop </div>
+                        <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> All Agent </div>
                         @elseif($row->send_to == 2)
                         <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> All Customer </div>
                         @elseif($row->send_to == 3)
-                        <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> Selected Shop </div>
+                        <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> Selected Agent </div>
                         @else
                         <div class="flex items-center justify-center text-theme-9"> <i data-feather="check-square" class="w-4 h-4 mr-2"></i> Selected Customer </div>
                         @endif
@@ -114,9 +114,9 @@
                 <label>Category Type</label>
                 <select onchange="usertype()" id="send_to" name="send_to" class="input w-full border mt-2 flex-1">
                     <option value="">SELECT</option>
-                    <option value="1">All Shop</option>
+                    <option value="1">All Agent</option>
                     <option value="2">All Customer</option>
-                    <option value="3">Selected Shop</option>
+                    <option value="3">Selected Agent</option>
                     <option value="4">Selected Customer</option>
                 </select>
             </div>
@@ -124,19 +124,15 @@
                 <label>Select the Customer</label>
                 <select id="customer_id" name="customer_id[]" class="select2 w-full" multiple>
                     @foreach ($customer as $customer1)
-                        <option value="{{$customer1->id}}">{{$customer1->first_name}} {{$customer1->last_name}}</option>
+                        <option value="{{$customer1->id}}">{{$customer1->first_name}} {{$customer1->last_name}} - {{$customer1->mobile}}</option>
                     @endforeach
                 </select>
             </div>
-            <div class="col-span-12 sm:col-span-12" id="shopshow">
-                <label>Select the Shop</label>
-                <select id="shop_id" name="shop_id[]" class="select2 w-full" multiple>
-                    @foreach ($user as $user1)
-                        @if($user1->busisness_name != '')
-                        <option value="{{$user1->id}}">{{$user1->busisness_name}}</option>
-                        @else
-                        <option value="{{$user1->id}}">{{$user1->name}}</option>
-                        @endif
+            <div class="col-span-12 sm:col-span-12" id="agentshow">
+                <label>Select the Agent</label>
+                <select id="agent_id" name="agent_id[]" class="select2 w-full" multiple>
+                    @foreach ($agent as $agent1)
+                        <option value="{{$agent1->id}}">{{$agent1->name}} - {{$agent1->mobile}}</option>
                     @endforeach
                 </select>
             </div>
@@ -160,24 +156,24 @@
 $('.push_notification').addClass('side-menu--active');
 
 $("#customershow").hide();
-$("#shopshow").hide();
+$("#agentshow").hide();
 
 function usertype(){
   var send_to = $("#send_to").val();
   if(send_to == '1'){
-    $("#shopshow").hide();
+    $("#agentshow").hide();
     $("#customershow").hide();
   }
   else if(send_to == '2'){
-    $("#shopshow").hide();
+    $("#agentshow").hide();
     $("#customershow").hide();
   }
   else if(send_to == '3'){
-    $("#shopshow").show();
+    $("#agentshow").show();
     $("#customershow").hide();
   }
   else if(send_to == '4'){
-    $("#shopshow").hide();
+    $("#agentshow").hide();
     $("#customershow").show();
   }
 }
@@ -342,20 +338,20 @@ function Edit(id){
         $('select[name=send_to]').val(data.send_to);
         $('input[name=id]').val(id);
         if(data.send_to == '1'){
-            $("#shopshow").hide();
+            $("#agentshow").hide();
             $("#customershow").hide();
         }
         else if(data.send_to == '2'){
-            $("#shopshow").hide();
+            $("#agentshow").hide();
             $("#customershow").hide();
         }
         else if(data.send_to == '3'){
-            $("#shopshow").show();
+            $("#agentshow").show();
             $("#customershow").hide();
-            get_notification_shop(data.id);
+            get_notification_agent(data.id);
         }
         else if(data.send_to == '4'){
-            $("#shopshow").hide();
+            $("#agentshow").hide();
             $("#customershow").show();
             get_notification_customer(data.id);
         }
@@ -392,14 +388,14 @@ function Delete(id){
 }
 
 
-function get_notification_shop(id)
+function get_notification_agent(id)
 {
     $.ajax({        
         url : '/admin/get-notification-shop/'+id,
         type: "GET",
         success: function(data)
         {
-           $('#shop_id').html(data);
+           $('#agent_id').html(data);
         }
    });
 }

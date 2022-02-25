@@ -119,19 +119,27 @@ Route::group(['prefix' => 'agent'],function(){
 
     Route::post('/login', 'Api\AgentController@agentLogin');
 
-    Route::get('/dashboard', 'Api\AgentController@dashboard');
+    Route::get('/dashboard/{id}', 'Api\AgentController@dashboard');
 
-    Route::get('/get-today-booking', 'Api\AgentController@gettodaybooking');
-    Route::get('/get-booking-completed', 'Api\AgentController@getbookingcompleted');
+    Route::get('/get-today-booking/{id}', 'Api\AgentController@gettodaybooking');
+    Route::get('/get-upcoming-booking/{id}', 'Api\AgentController@getupcomingbooking');
+    Route::get('/get-booking-completed/{id}', 'Api\AgentController@getbookingcompleted');
     Route::get('/get-booking/{id}', 'Api\AgentController@getbooking');
     Route::get('/get-booking-details/{id}', 'Api\AgentController@getbookingdetails');
     Route::get('/get-booking-service/{id}', 'Api\AgentController@getbookingservice');
 
-    Route::get('/update-booking-status/{booking_id}/{status}', 'Api\AgentController@updatebookingstatus');
+    Route::post('/update-booking-status', 'Api\AgentController@updatebookingstatus');
     Route::get('/update-booking-paid/{booking_id}', 'Api\AgentController@updatebookingpaid');
 
     Route::get('/get-notification/{id}', 'Api\AgentController@getnotification');
 
     Route::post('/change-password', 'Api\AgentController@changePassword');
+
+    Route::post('/booking-otp-verified', 'Api\AgentController@bookingotpverified');
+
+    Route::post('/otp-resend', 'Api\AgentController@getApiOtpResend');
+
+    Route::post('/forget-password', 'Api\AgentController@forgetPassword');
+    Route::post('/reset-password', 'Api\AgentController@resetPassword');
 
 });

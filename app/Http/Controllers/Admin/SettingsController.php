@@ -11,6 +11,7 @@ use App\settings;
 use App\app_settings;
 use App\admin;
 use App\membership;
+use App\agent;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
 use DB;
@@ -168,6 +169,65 @@ class SettingsController extends Controller
         $membership = membership::find($id);
         $membership->status = $status;
         $membership->save();
+        return response()->json(['message'=>'Successfully Delete'],200); 
+    }
+
+
+    public function agent(){
+        $agent = agent::all();
+        return view('admin.agent',compact('agent'));
+    }
+
+    public function saveagent(Request $request){
+        $this->validate($request, [
+            'name'=>'required',
+            'email'=>'required',
+            'mobile'=>'required',
+            // 'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
+            // 'password_confirmation' => 'min:6'
+            'confirmation' => 'required|min:6'
+        ]);
+        
+        $agent = new agent;
+        $agent->name = $request->name;
+        $agent->email = $request->email;
+        $agent->mobile = $request->mobile;
+        $agent->password = Hash::make($request->password);
+        $agent->save();
+
+        return response()->json('successfully save'); 
+    }
+
+    public function updateagent(Request $request){
+        $this->validate($request, [
+            'name'=>'required',
+            'email'=>'required',
+            'mobile'=>'required',
+            // 'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
+            // 'password_confirmation' => 'min:6'
+        ]);
+        
+        $agent = agent::find($request->id);
+        $agent->name = $request->name;
+        $agent->email = $request->email;
+        $agent->mobile = $request->mobile;
+        if($request->password != ''){
+        $agent->password = Hash::make($request->password);
+        }
+        $agent->save();
+
+        return response()->json('successfully update'); 
+    }
+
+    public function editagent($id){
+        $agent = agent::find($id);
+        return response()->json($agent); 
+    }
+    
+    public function deleteagent($id,$status){
+        $agent = agent::find($id);
+        $agent->status = $status;
+        $agent->save();
         return response()->json(['message'=>'Successfully Delete'],200); 
     }
 

@@ -19,6 +19,7 @@ class CreateAgentsTable extends Migration
             $table->string('email')->nullable()->default('');
             $table->string('mobile')->nullable()->default('');
             $table->string('password')->nullable()->default('');
+            $table->string('otp')->nullable()->default('');
             $table->string('firebase_key')->nullable()->default('');
             $table->string('role_id')->nullable()->default('');
             $table->string('status')->default('0');

@@ -15,12 +15,12 @@ class CreatePushNotificationsTable extends Migration
     {
         Schema::create('push_notifications', function (Blueprint $table) {
             $table->id();
-            $table->string('shop_id')->nullable();
+            $table->string('agent_id')->nullable();
             $table->string('title')->nullable();
             $table->string('description')->nullable();
             $table->string('send_to')->nullable();
             $table->string('customer_ids')->nullable();
-            $table->string('shop_ids')->nullable();
+            $table->string('agent_ids')->nullable();
             $table->string('expiry_date')->nullable();
             $table->string('other_status')->nullable();
             $table->string('deny_remark',5000)->nullable();

@@ -138,22 +138,13 @@ class BookingController extends Controller
             })
             ->addColumn('status', function ($booking) {
                 if ($booking->status == 0) {
-                    return '<td>Order Placed</td>';
-                } 
+                    return '<td>Booking Accepted</td>';
+                }
                 elseif ($booking->status == 1) {
-                    return '<td>Order Accepted</td>';
-                }
-                elseif ($booking->status == 2) {
-                    return '<td>Received</td>';
-                }
-                elseif ($booking->status == 3) {
                     return '<td>Processing</td>';
                 }
-                elseif ($booking->status == 4) {
+                elseif ($booking->status == 2) {
                     return '<td>Completed</td>';
-                }
-                elseif ($booking->status == 5) {
-                    return '<td>Delivered</td>';
                 }
             })
             ->addColumn('booking_date', function ($booking) {
@@ -172,27 +163,12 @@ class BookingController extends Controller
 
                 if($booking->status == 0){
                     $output.='
-                    <a onclick="UpdateStatus('.$booking->id.',1)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Order Accepted</a>
+                    <a onclick="UpdateStatus('.$booking->id.',1)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Booking Processing</a>
                     ';
                 }
                 elseif($booking->status == 1){
                     $output.='
-                    <a onclick="OpenPickup('.$booking->id.')" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Pickup</a>
-                    ';
-                }
-                elseif($booking->status == 2){
-                    $output.='
-                    <a onclick="UpdateStatus('.$booking->id.',3)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> On Processing</a>
-                    ';
-                }
-                elseif($booking->status == 3){
-                    $output.='
-                    <a onclick="UpdateStatus('.$booking->id.',4)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Completed</a>
-                    ';
-                }
-                elseif($booking->status == 4){
-                    $output.='
-                    <a onclick="OpenDelivery('.$booking->id.')" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Delivered</a>
+                    <a onclick="UpdateStatus('.$booking->id.',2)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Completed</a>
                     ';
                 }
                 return '<div class="dropdown relative"> 

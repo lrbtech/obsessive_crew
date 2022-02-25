@@ -75,12 +75,18 @@ Route::group(['prefix' => 'admin'],function(){
     Route::get('/view-customer/{id}', 'Admin\CustomerController@viewcustomer');
     Route::post('/customer-booking/{id}', 'Admin\CustomerController@customerbooking');
 
-    Route::get('/agent', 'Admin\AgentController@agent');
-    Route::get('/view-agent/{id}', 'Admin\AgentController@viewagent');
-    Route::POST('/get-agent', 'Admin\AgentController@getagent');
-    Route::get('/delete-agent/{id}/{status}', 'Admin\AgentController@deleteagent');
+    Route::get('/agent', 'Admin\SettingsController@agent');
+    Route::POST('/save-agent', 'Admin\SettingsController@saveagent');
+    Route::POST('/update-agent', 'Admin\SettingsController@updateagent');
+    Route::get('/delete-agent/{id}/{status}', 'Admin\SettingsController@deleteagent');
+    Route::get('/edit-agent/{id}', 'Admin\SettingsController@editagent');
 
-    Route::post('/agent-booking/{id}', 'Admin\AgentController@agentbooking');
+    // Route::get('/agent', 'Admin\AgentController@agent');
+    // Route::get('/view-agent/{id}', 'Admin\AgentController@viewagent');
+    // Route::POST('/get-agent', 'Admin\AgentController@getagent');
+    // Route::get('/delete-agent/{id}/{status}', 'Admin\AgentController@deleteagent');
+
+    // Route::post('/agent-booking/{id}', 'Admin\AgentController@agentbooking');
 
     Route::get('/store-time', 'Admin\AgentController@storetime');
     Route::POST('/update-store-time', 'Admin\AgentController@updatetime');

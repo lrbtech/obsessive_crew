@@ -74,7 +74,7 @@
                                         <div class="report-box__indicator bg-theme-9 tooltip cursor-pointer" title="22% Higher than last month"> 22% <i data-feather="chevron-up" class="w-4 h-4"></i> </div>
                                     </div> -->
                                 </div>
-                                <div class="text-3xl font-bold leading-8 mt-6">{{$shop}}</div>
+                                <div class="text-3xl font-bold leading-8 mt-6">{{$agent}}</div>
                                 <div class="text-base text-gray-600 mt-1">Agents</div>
                             </div>
                         </div>

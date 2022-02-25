@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\push_notification;
 use App\customer;
-use App\User;
+use App\agent;
 
 
 class NotificationController extends Controller
@@ -29,17 +29,17 @@ class NotificationController extends Controller
             }
             $customer_id = collect($customer1)->implode(',');
         }
-        $shop_id='';
+        $agent_id='';
         if($request->send_to == '3'){
-            $shop1;
-            foreach($request->shop_id as $row){
-                $shop1[]=$row;
+            $agent1;
+            foreach($request->agent_id as $row){
+                $agent1[]=$row;
             }
-            $shop_id = collect($shop1)->implode(',');
+            $agent_id = collect($agent1)->implode(',');
         }
 
         $push_notification = new push_notification;
-        $push_notification->shop_id = 'admin';
+        $push_notification->agent_id = 'admin';
         $push_notification->title = $request->title;
         $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
@@ -48,7 +48,7 @@ class NotificationController extends Controller
         $push_notification->customer_ids = $customer_id;
         }
         if($request->send_to == '3'){
-        $push_notification->shop_ids = $shop_id;
+        $push_notification->agent_ids = $agent_id;
         }
         $push_notification->status = 1;
         $push_notification->save();
@@ -69,16 +69,16 @@ class NotificationController extends Controller
             }
             $customer_id = collect($customer1)->implode(',');
         }
-        $shop_id='';
+        $agent_id='';
         if($request->send_to == '3'){
-            $shop1;
-            foreach($request->shop_id as $row){
-                $shop1[]=$row;
+            $agent1;
+            foreach($request->agent_id as $row){
+                $agent1[]=$row;
             }
-            $shop_id = collect($shop1)->implode(',');
+            $agent_id = collect($agent1)->implode(',');
         }
         $push_notification = new push_notification;
-        $push_notification->shop_id = 'admin';
+        $push_notification->agent_id = 'admin';
         $push_notification->title = $request->title;
         $push_notification->expiry_date = date('Y-m-d', strtotime($request->expiry_date));
         $push_notification->description = $request->description;
@@ -87,7 +87,7 @@ class NotificationController extends Controller
         $push_notification->customer_ids = $customer_id;
         }
         if($request->send_to == '3'){
-        $push_notification->shop_ids = $shop_id;
+        $push_notification->agent_ids = $agent_id;
         }
         $push_notification->status = 1;
         $push_notification->save();
@@ -109,13 +109,13 @@ class NotificationController extends Controller
             }
             $customer_id = collect($customer1)->implode(',');
         }
-        $shop_id='';
+        $agent_id='';
         if($request->send_to == '3'){
-            $shop1;
-            foreach($request->shop_id as $row){
-                $shop1[]=$row;
+            $agent1;
+            foreach($request->agent_id as $row){
+                $agent1[]=$row;
             }
-            $shop_id = collect($shop1)->implode(',');
+            $agent_id = collect($agent1)->implode(',');
         }
         $push_notification = push_notification::find($request->id);
         $push_notification->title = $request->title;
@@ -126,7 +126,7 @@ class NotificationController extends Controller
         $push_notification->customer_ids = $customer_id;
         }
         if($request->send_to == '3'){
-        $push_notification->shop_ids = $shop_id;
+        $push_notification->agent_ids = $agent_id;
         }
         $push_notification->save();
 
@@ -146,13 +146,13 @@ class NotificationController extends Controller
             }
             $customer_id = collect($customer1)->implode(',');
         }
-        $shop_id='';
+        $agent_id='';
         if($request->send_to == '3'){
-            $shop1;
-            foreach($request->shop_id as $row){
-                $shop1[]=$row;
+            $agent1;
+            foreach($request->agent_id as $row){
+                $agent1[]=$row;
             }
-            $shop_id = collect($shop1)->implode(',');
+            $agent_id = collect($agent1)->implode(',');
         }
         $push_notification = push_notification::find($request->id);
         $push_notification->title = $request->title;
@@ -163,7 +163,7 @@ class NotificationController extends Controller
         $push_notification->customer_ids = $customer_id;
         }
         if($request->send_to == '3'){
-        $push_notification->shop_ids = $shop_id;
+        $push_notification->agent_ids = $agent_id;
         }
         $push_notification->save();
 
@@ -175,8 +175,8 @@ class NotificationController extends Controller
     public function Notification(){
         $push_notification = push_notification::all();
         $customer = customer::all();
-        $user = User::where('role_id','admin')->where('status',0)->get();
-        return view('admin.push_notification',compact('push_notification','customer','user'));
+        $agent = agent::where('status',0)->get();
+        return view('admin.push_notification',compact('push_notification','customer','agent'));
     }
 
     public function editNotification($id){
@@ -196,8 +196,8 @@ public function sendNotification($id){
     $push_notification = push_notification::find($id);
 
     if($push_notification->send_to == '1'){
-        $shop = User::where('firebase_key','!=',null)->get();
-        foreach($shop as $shop1){
+        $agent = agent::where('firebase_key','!=',null)->get();
+        foreach($agent as $agent1){
         $curl = curl_init();
         curl_setopt_array($curl, array(
         CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
@@ -208,9 +208,9 @@ public function sendNotification($id){
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$shop1->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+        CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$agent1->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
         CURLOPT_HTTPHEADER => array(
-            "Authorization: key=AAAAJsgpkGE:APA91bG774TdUb5ctWsrbJ6qRbh0-1keAzgxTFaDOxiMgICdL7CQXuqp1YlgRPse7OFY0eTsVhYZwNstINZdiGEduwBHYOHwr6xOqQ-rPzXd1Vj2M6R98l9IlfDOeT9_boLqHSdL9qc0",
+            "Authorization: key=AAAA7jZoJ5c:APA91bHWucHex7yFNIWOeB8acb2hL6EFHCi9taaIW6ddhqUQmY4g3Jy-2U3gLFPwcAZfIAPpaYUtNZeCoY_bMxZ7hemVj5Jufef6r1oMYQf7yKvL449ax1nKdUKlJ3EhFhjV09FETxrC",
             "Content-Type: application/json"
         ),
         ));
@@ -234,7 +234,7 @@ public function sendNotification($id){
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$customer->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
         CURLOPT_HTTPHEADER => array(
-            "Authorization: key=AAAAJsgpkGE:APA91bG774TdUb5ctWsrbJ6qRbh0-1keAzgxTFaDOxiMgICdL7CQXuqp1YlgRPse7OFY0eTsVhYZwNstINZdiGEduwBHYOHwr6xOqQ-rPzXd1Vj2M6R98l9IlfDOeT9_boLqHSdL9qc0",
+            "Authorization: key=AAAA7jZoJ5c:APA91bHWucHex7yFNIWOeB8acb2hL6EFHCi9taaIW6ddhqUQmY4g3Jy-2U3gLFPwcAZfIAPpaYUtNZeCoY_bMxZ7hemVj5Jufef6r1oMYQf7yKvL449ax1nKdUKlJ3EhFhjV09FETxrC",
             "Content-Type: application/json"
         ),
         ));
@@ -244,8 +244,8 @@ public function sendNotification($id){
         }
     }
     elseif($push_notification->send_to == '3'){
-        foreach(explode(',',$push_notification->shop_ids) as $shop_id){
-            $shop = User::find($shop_id);
+        foreach(explode(',',$push_notification->agent_ids) as $agent_id){
+            $agent = agent::find($agent_id);
             $curl = curl_init();
             curl_setopt_array($curl, array(
             CURLOPT_URL => "https://fcm.googleapis.com/fcm/send",
@@ -256,9 +256,9 @@ public function sendNotification($id){
             CURLOPT_FOLLOWLOCATION => true,
             CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
             CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$shop->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
+            CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$agent->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
             CURLOPT_HTTPHEADER => array(
-                "Authorization: key=AAAAJsgpkGE:APA91bG774TdUb5ctWsrbJ6qRbh0-1keAzgxTFaDOxiMgICdL7CQXuqp1YlgRPse7OFY0eTsVhYZwNstINZdiGEduwBHYOHwr6xOqQ-rPzXd1Vj2M6R98l9IlfDOeT9_boLqHSdL9qc0",
+                "Authorization: key=AAAA7jZoJ5c:APA91bHWucHex7yFNIWOeB8acb2hL6EFHCi9taaIW6ddhqUQmY4g3Jy-2U3gLFPwcAZfIAPpaYUtNZeCoY_bMxZ7hemVj5Jufef6r1oMYQf7yKvL449ax1nKdUKlJ3EhFhjV09FETxrC",
                 "Content-Type: application/json"
             ),
             ));
@@ -282,7 +282,7 @@ public function sendNotification($id){
         CURLOPT_CUSTOMREQUEST => "POST",
         CURLOPT_POSTFIELDS =>"{\r\n\"to\":\"$customer->firebase_key\",\r\n \"notification\" : {\r\n  \"sound\" : \"default\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n },\r\n \"data\" : {\r\n  \"sound\" : \"default\",\r\n  \"click_action\" : \"FLUTTER_NOTIFICATION_CLICK\",\r\n  \"id\" : \"$push_notification->id\",\r\n  \"body\" :  \"$push_notification->description\",\r\n  \"title\" : \"$push_notification->title\",\r\n  \"content_available\" : true,\r\n  \"priority\" : \"high\"\r\n }\r\n}",
         CURLOPT_HTTPHEADER => array(
-            "Authorization: key=AAAAJsgpkGE:APA91bG774TdUb5ctWsrbJ6qRbh0-1keAzgxTFaDOxiMgICdL7CQXuqp1YlgRPse7OFY0eTsVhYZwNstINZdiGEduwBHYOHwr6xOqQ-rPzXd1Vj2M6R98l9IlfDOeT9_boLqHSdL9qc0",
+            "Authorization: key=AAAA7jZoJ5c:APA91bHWucHex7yFNIWOeB8acb2hL6EFHCi9taaIW6ddhqUQmY4g3Jy-2U3gLFPwcAZfIAPpaYUtNZeCoY_bMxZ7hemVj5Jufef6r1oMYQf7yKvL449ax1nKdUKlJ3EhFhjV09FETxrC",
             "Content-Type: application/json"
         ),
         ));
@@ -300,22 +300,22 @@ public function sendNotification($id){
 
 
 
-public function getNotificationshop($id){ 
+public function getNotificationagent($id){ 
     $data  = push_notification::find($id);
-    $user = User::all();
+    $agent = agent::all();
 
   $arraydata=array();
-  foreach(explode(',',$data->shop_ids) as $shop1){
-    $arraydata[]=$shop1;
+  foreach(explode(',',$data->agent_ids) as $agent1){
+    $arraydata[]=$agent1;
   }
   $output = '';
-    foreach ($user as $value){
+    foreach ($agent as $value){
         if(in_array($value->id , $arraydata))
         {
-            $output .='<option selected="true" value="'.$value->id.'">'.$value->busisness_name.'</option>'; 
+            $output .='<option selected="true" value="'.$value->id.'">'.$value->name.' - '.$value->mobile.'</option>'; 
         }
         else{
-            $output .='<option value="'.$value->id.'">'.$value->busisness_name.'</option>'; 
+            $output .='<option value="'.$value->id.'">'.$value->name.' - '.$value->mobile.'</option>'; 
         }
     }
   
@@ -324,20 +324,20 @@ public function getNotificationshop($id){
 
 public function getNotificationCustomer($id){ 
     $data  = push_notification::find($id);
-    $user = customer::all();
+    $customer = customer::all();
 
   $arraydata=array();
-  foreach(explode(',',$data->customer_ids) as $user1){
-    $arraydata[]=$user1;
+  foreach(explode(',',$data->customer_ids) as $customer1){
+    $arraydata[]=$customer1;
   }
   $output = '';
-    foreach ($user as $value){
+    foreach ($customer as $value){
         if(in_array($value->id , $arraydata))
         {
-            $output .='<option selected="true" value="'.$value->id.'">'.$value->first_name.' '.$value->last_name.'</option>'; 
+            $output .='<option selected="true" value="'.$value->id.'">'.$value->first_name.' '.$value->last_name.' - '.$value->mobile.'</option>'; 
         }
         else{
-            $output .='<option value="'.$value->id.'">'.$value->first_name.' '.$value->last_name.'</option>'; 
+            $output .='<option value="'.$value->id.'">'.$value->first_name.' '.$value->last_name.' - '.$value->mobile.'</option>'; 
         }
     }
   

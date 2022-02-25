@@ -32,12 +32,9 @@
                         <label>Status</label>
                         <select id="status" name="status" class="input w-full border mt-2">
                         <option value="status">SELECT</option>
-                        <option value="0">Order Placed</option>
-                        <option value="1">Order Accepted</option>
-                        <option value="2">Received</option>
-                        <option value="3">Processing</option>
-                        <option value="4">Completed</option>
-                        <option value="5">Delivered</option>
+                        <option value="0">Booking Accepted</option>
+                        <option value="1">Booking Processing</option>
+                        <option value="2">Booking Completed</option>
                         </select>
                     </div>
                     <div class="relative mt-2">

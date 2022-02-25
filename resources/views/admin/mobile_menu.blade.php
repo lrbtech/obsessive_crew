@@ -49,6 +49,12 @@
             </a>
         </li> -->
         <li>
+            <a href="/admin/agent" class="menu agent">
+                <div class="menu__icon"> <i data-feather="user-check"></i> </div>
+                <div class="menu__title"> Agent </div>
+            </a>
+        </li>
+        <li>
             <a href="/admin/push-notification" class="menu push-notification">
                 <div class="menu__icon"> <i data-feather="package"></i> </div>
                 <div class="menu__title"> Push Notification </div>

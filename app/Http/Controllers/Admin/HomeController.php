@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\shop_service;
 use App\User;
+use App\agent;
 use App\customer;
 use App\booking;
 use Auth;
@@ -24,11 +25,15 @@ class HomeController extends Controller
         $cfdate = date('Y-m-d',strtotime('first day of this month'));
         $cldate = date('Y-m-d',strtotime('last day of this month'));
   
-        $booking = booking::whereBetween('date', [$cfdate, $cldate])->count();
-        $booking_value = booking::whereBetween('date', [$cfdate, $cldate])->get()->sum("total");
-        $shop = User::whereBetween('date', [$cfdate, $cldate])->count();
-        $customer = customer::whereBetween('date', [$cfdate, $cldate])->count();
+        $booking = booking::count();
+        $booking_value = booking::all()->sum("total");
+        $agent = agent::count();
+        $customer = customer::count();
 
-        return view('admin.dashboard',compact('booking','booking_value','customer','shop'));
+        $current_month_customer = customer::whereBetween('date', [$cfdate, $cldate])->count();
+        $current_month_booking_value = booking::whereBetween('date', [$cfdate, $cldate])->get()->sum("total");
+        $current_month_booking = booking::whereBetween('date', [$cfdate, $cldate])->count();
+
+        return view('admin.dashboard',compact('booking','booking_value','customer','agent'));
     }
 }
