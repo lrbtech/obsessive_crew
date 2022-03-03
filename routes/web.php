@@ -34,6 +34,7 @@ Route::get('/service', 'HomeController@service');
 Route::get('/car-wash-services', 'HomeController@carwashservices');
 Route::get('/garage-services', 'HomeController@garageservices');
 Route::get('/pickup-services', 'HomeController@pickupservices');
+Route::get('/privacy-policy', 'HomeController@privacypolicy');
 
 Route::get('/booking-print/{id}', 'HomeController@bookingprint');
 Route::get('/shop-login/{id}', 'HomeController@shoplogin');

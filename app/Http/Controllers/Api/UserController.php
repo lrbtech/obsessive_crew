@@ -159,7 +159,7 @@ class UserController extends Controller
             //$customer->password = Hash::make($request->password);
             $customer->save();
 
-            // $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew By Wash Account";
+            // $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew Account";
 
             //$this->send_sms($customer->mobile,$msg);
 
@@ -229,7 +229,7 @@ class UserController extends Controller
             //     $customer->otp = $randomid;
             //     $otp = $randomid;
             //     $customer->status = 0;
-            //     $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew By Wash Account";
+            //     $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew Account";
             //     $this->send_sms($customer->mobile,$msg);
             //     $mobile_status = 1;
             // }
@@ -297,7 +297,7 @@ class UserController extends Controller
             }
             else{
                 $randomid = mt_rand(1000,9999); 
-                $msg= "Dear Customer, Please use the code ".$randomid." to login your Obsessive Crew By Wash Account";
+                $msg= "Dear Customer, Please use the code ".$randomid." to login your Obsessive Crew Account";
                 $this->send_sms($request->mobile,$msg);
             }
 
@@ -336,7 +336,7 @@ class UserController extends Controller
             // $hashing = $request->mobile.$uniqueid;
             // $token_value=Hash::make($hashing);
 
-            $msg= "Dear Customer, Please use the code ".$randomid." to register your Obsessive Crew By Wash Account";
+            $msg= "Dear Customer, Please use the code ".$randomid." to register your Obsessive Crew Account";
             $this->send_sms($request->mobile,$msg);
             return response()->json(
                 ['message' => 'New Login',
@@ -413,7 +413,7 @@ class UserController extends Controller
             $randomid = mt_rand(1000,9999);
             $customer->otp = $randomid;
             $customer->save();
-            $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew By Wash Account";
+            $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew Account";
             $this->send_sms($customer->mobile,$msg);
             return response()->json(['message' => 'Otp Send Successfully'], 200);
         }else{

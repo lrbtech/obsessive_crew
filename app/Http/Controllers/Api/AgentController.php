@@ -197,6 +197,68 @@ class AgentController extends Controller
         return response()->json($datas); 
     }
 
+
+    public function getpendingbooking($id){
+        $today = date('Y-m-d');
+        $booking = booking::where('date','<',$today)->orderBy('id','DESC')->get();
+        $data=array();
+        $datas=array();
+        foreach ($booking as $key => $value) {
+            $vehicle = vehicles::find($value->vehicle_id);
+            $colour = colour::find($vehicle->colour);
+            $customer = customer::find($value->customer_id);
+            $data = array(
+                '_id' => $value->id,
+                'booking_id' => (string)$value->booking_id,
+                'service_type' => '',
+                'customer_name' => $customer->first_name .' '. $customer->last_name,
+                'customer_mobile' => $customer->mobile,
+                'customer_email' => $customer->email,
+                'booking_date' => $value->booking_date,
+                'booking_time' => $value->booking_time,
+                'booking_status' => (int)$value->status,
+                'payment_type' => (int)$value->payment_type,
+                'payment_status' => (int)$value->payment_status,
+                'otp' => $value->otp,
+                'subtotal' => $value->subtotal,
+                'total' => $value->total,
+                'discount' => (string)$value->coupon_value,
+                'coupon_code' => '',
+                'coupon_value' => 0.0,
+                'address_id'=> (int)$value->address_id,
+                //'membership_value' => $value->membership_value,
+                'vehicle_id'=> (int)$value->vehicle_id,
+                'vehicle_name'=> $vehicle->brand.' '.$vehicle->vehicle_name,
+                'vehicle_no'=> $vehicle->registration_city.' '.$vehicle->registration_code.' '.$vehicle->registration_number,
+                'vehicle_color'=> $colour->code,
+                'status' => '',
+                'status_id'=> (int)$value->status,
+                'address'=> (string)$value->address,
+                'latitude'=> (string)$value->latitude,
+                'longitude'=> (string)$value->longitude,
+            );
+            
+            if($value->status == 0){
+                $data['status'] = 'Booking Accepted';
+            }
+            elseif($value->status == 1){
+                $data['status'] = 'Processing';
+            }
+            elseif($value->status == 2){
+                $data['status'] = 'Completed';
+            }
+
+            if($value->coupon_code !=null){
+                $data['coupon_code'] = $value->coupon_code;
+            }
+            if($value->coupon_value !=null){
+                $data['coupon_value'] = (string)$value->coupon_value;
+            }
+            $datas[] = $data;
+        }   
+        return response()->json($datas); 
+    }
+
     public function getupcomingbooking($id){
         $today = date('Y-m-d');
         $booking = booking::where('booking_date','>',$today)->orderBy('id','DESC')->get();
@@ -595,7 +657,7 @@ class AgentController extends Controller
             $randomid = mt_rand(1000,9999);
             $customer->otp = $randomid;
             $customer->save();
-            $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew By Wash Account";
+            $msg= "Dear Customer, Please use the code ".$customer->otp." to verify your Obsessive Crew Account";
             $this->send_sms($customer->mobile,$msg);
             return response()->json(['message' => 'Otp Send Successfully'], 200);
         }else{

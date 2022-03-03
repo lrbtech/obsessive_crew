@@ -22,7 +22,7 @@
                         <div class="banner-btn">
                             <ul>
                                 <li><a class="readon2 get-new purchase" href="/contact">Register Now</a></li>
-                                <li><a class="readon2 get-new download" href="/contact">Download Now</a></li>
+                                <li><a class="readon2 get-new download" target="_blank" href="https://play.google.com/store/apps/details?id=com.obsessive.crew">Download Now</a></li>
                             </ul>
                         </div>
                     </div>

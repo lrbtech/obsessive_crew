@@ -9,7 +9,7 @@ import summernoteCss from '../../node_modules/summernote/dist/summernote-lite.cs
         let options = {
             placeholder: 'Hello stand alone ui',
             tabsize: 2,
-            height: 120,
+            height: 520,
             toolbar: [
             ['style', ['style']],
             ['font', ['bold', 'underline', 'italic']],

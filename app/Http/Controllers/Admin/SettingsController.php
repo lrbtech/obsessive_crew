@@ -185,7 +185,7 @@ class SettingsController extends Controller
             'mobile'=>'required',
             // 'password' => 'min:6|required_with:password_confirmation|same:password_confirmation',
             // 'password_confirmation' => 'min:6'
-            'confirmation' => 'required|min:6'
+            'password' => 'required|min:6'
         ]);
         
         $agent = new agent;

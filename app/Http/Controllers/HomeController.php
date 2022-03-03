@@ -46,6 +46,10 @@ class HomeController extends Controller
         $settings = settings::first();
         return view('page.home',compact('settings'));
 	}
+    public function privacypolicy(){
+        $settings = settings::first();
+        return view('page.privacy_policy',compact('settings'));
+	}
     public function about(){
         $settings = settings::first();
         return view('page.about',compact('settings'));

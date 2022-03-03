@@ -124,7 +124,7 @@
                 <li>
                     <a href="/admin/terms" class="side-menu terms">
                         <div class="side-menu__icon"> <i data-feather="activity"></i> </div>
-                        <div class="side-menu__title"> Terms and Conditions </div>
+                        <div class="side-menu__title"> Privacy Policy </div>
                     </a>
                 </li>
                 <li>

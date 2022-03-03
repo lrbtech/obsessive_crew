@@ -122,6 +122,7 @@ Route::group(['prefix' => 'agent'],function(){
     Route::get('/dashboard/{id}', 'Api\AgentController@dashboard');
 
     Route::get('/get-today-booking/{id}', 'Api\AgentController@gettodaybooking');
+    Route::get('/get-pending-booking/{id}', 'Api\AgentController@getpendingbooking');
     Route::get('/get-upcoming-booking/{id}', 'Api\AgentController@getupcomingbooking');
     Route::get('/get-booking-completed/{id}', 'Api\AgentController@getbookingcompleted');
     Route::get('/get-booking/{id}', 'Api\AgentController@getbooking');

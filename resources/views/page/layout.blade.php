@@ -94,6 +94,7 @@
                                                     </ul>
                                                 </li>
                                                 <li class="faq"><a href="faq">FAQ</a></li>
+                                                <li class="privacy-policy"><a href="/privacy-policy">Privacy Policy</a></li>
                                                 <li class="contact"><a href="/contact">Contact Us</a></li>                              
        	                                    </ul> <!-- //.nav-menu -->
        	                                </nav>

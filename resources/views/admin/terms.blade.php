@@ -12,7 +12,7 @@
     </div>
     <!-- END: Top Bar -->
     <h2 class="intro-y text-lg font-medium mt-10">
-        Terms and Conditions
+        Privacy Policy
     </h2>
     <form action="/admin/update-terms" class="validate-form" id="form" method="POST" enctype="multipart/form-data">
     {{ csrf_field() }}
@@ -22,7 +22,7 @@
             <!-- BEGIN: Form Layout -->
             <div class="intro-y box p-5">
                 <div>
-                    <label>Terms and Conditions</label>
+                    <label>Privacy Policy</label>
                     <textarea style="height:500px !important;" data-feature="all" class="summernote" name="terms_and_condition" id="terms_and_condition"><?php echo html_entity_decode($settings->terms_and_condition); ?></textarea>
                 </div>
     
@@ -44,6 +44,8 @@
 $('.terms').addClass('side-menu--active');
 $('.settings_master').addClass('side-menu--active side-menu--open');
 $('.settings').addClass('side-menu__sub-open');
+
+
 </script>
 @endsection
             
