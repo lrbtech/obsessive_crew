@@ -51,9 +51,8 @@
                         <th class="whitespace-no-wrap">#</th>
                         <th class="whitespace-no-wrap">Date</th>
                         <th class="whitespace-no-wrap">Customer Details</th>
-                        <th class="whitespace-no-wrap">Payment Type</th>
                         <th class="whitespace-no-wrap">Total</th>
-                        <th class="whitespace-no-wrap">Payment Status</th>
+                        <th class="whitespace-no-wrap">Assigned Agent</th>
                         <th class="whitespace-no-wrap">Status</th>
                         <th class="whitespace-no-wrap">Action</th>
                     </tr>
@@ -68,20 +67,21 @@
 <!-- END: Content -->
 
 <!-- BEGIN: Header & Footer Modal -->
-<div class="modal" id="pickup_modal">
+<div class="modal" id="agent_modal">
     <div class="modal__content">
         <div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
             <h2 id="modal-title" class="font-medium text-base mr-auto">
-                Update Driver
+                Update Agent
             </h2>
         </div>
-        <form class="validate-form" id="pickup_form" method="POST" enctype="multipart/form-data">
+        <form class="validate-form" id="agent_form" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
-        <input type="hidden" name="pickup_booking_id" id="pickup_booking_id">
+        <input type="hidden" name="booking_id" id="booking_id">
+        <input type="hidden" name="status" id="status">
         <div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
             <div class="col-span-12 sm:col-span-12">
-                <label>Pickup Driver</label>
-                <select class="input w-full border mt-2 flex-1" name="pickup_driver" id="pickup_driver">
+                <label>Agent</label>
+                <select class="input w-full border mt-2 flex-1" name="update_agent_id" id="update_agent_id">
                     <option value="">SELECT</option>
                     @foreach($staff as $key => $row)
                     <option value="{{$row->id}}">{{$row->name}} - {{$row->mobile}}</option>
@@ -92,38 +92,7 @@
         </form>
         <div class="px-5 py-3 text-right border-t border-gray-200">
             <button type="button" data-dismiss="modal" class="button w-20 border text-gray-700 mr-1">Cancel</button>
-            <button onclick="UpdatePickup()" id="saveButton" type="button" class="button w-20 bg-theme-1 text-white">Update</button>
-        </div>
-    </div>
-</div>
-<!-- END: Header & Footer Modal -->
-
-<!-- BEGIN: Header & Footer Modal -->
-<div class="modal" id="delivery_modal">
-    <div class="modal__content">
-        <div class="flex items-center px-5 py-5 sm:py-3 border-b border-gray-200">
-            <h2 id="modal-title" class="font-medium text-base mr-auto">
-                Update Driver
-            </h2>
-        </div>
-        <form class="validate-form" id="delivery_form" method="POST" enctype="multipart/form-data">
-        {{ csrf_field() }}
-        <input type="hidden" name="delivery_booking_id" id="delivery_booking_id">
-        <div class="p-5 grid grid-cols-12 gap-4 row-gap-3">
-            <div class="col-span-12 sm:col-span-12">
-                <label>Delivery Driver</label>
-                <select class="input w-full border mt-2 flex-1" name="delivery_driver" id="delivery_driver">
-                    <option value="">SELECT</option>
-                    @foreach($staff as $key => $row)
-                    <option value="{{$row->id}}">{{$row->name}} - {{$row->mobile}}</option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-        </form>
-        <div class="px-5 py-3 text-right border-t border-gray-200">
-            <button type="button" data-dismiss="modal" class="button w-20 border text-gray-700 mr-1">Cancel</button>
-            <button onclick="UpdateDelivery()" id="saveButton" type="button" class="button w-20 bg-theme-1 text-white">Update</button>
+            <button onclick="Update()" id="saveButton" type="button" class="button w-20 bg-theme-1 text-white">Update</button>
         </div>
     </div>
 </div>
@@ -170,9 +139,8 @@ var orderPageTable = $('#datatable').DataTable({
         { data: 'booking_id', name: 'booking_id'},
         { data: 'booking_date', name: 'booking_date' },
         { data: 'customer_details', name: 'customer_details' },
-        { data: 'payment_type', name: 'payment_type' },
         { data: 'total', name: 'total' },
-        { data: 'payment_status', name: 'payment_status' },
+        { data: 'assign_agent', name: 'assign_agent' },
         { data: 'status', name: 'status' },
         { data: 'action', name: 'action' },
     ]
@@ -208,50 +176,44 @@ function UpdatePayment(id){
     } 
 }
 
+// function UpdateStatus(id,status){
+//     var r = confirm("Are you sure");
+//     if (r == true) {
+//       $.ajax({
+//         url : '/admin/update-booking-status/'+id+'/'+status,
+//         type: "GET",
+//         dataType: "JSON",
+//         success: function(data)
+//         {
+//             Swal.fire({
+//                 //title: "Please Check Your Email",
+//                 text: 'Successfully Update',
+//                 type: "success",
+//                 confirmButtonClass: 'button text-white bg-theme-1 shadow-md mr-2',
+//                 buttonsStyling: false,
+//             }).then(function() {
+//                 var new_url = search_url();
+//                 orderPageTable.ajax.url(new_url).load(null, false);
+//             });
+//         }
+//       });
+//     } 
+// }
+
 function UpdateStatus(id,status){
-    var r = confirm("Are you sure");
-    if (r == true) {
-      $.ajax({
-        url : '/admin/update-booking-status/'+id+'/'+status,
-        type: "GET",
-        dataType: "JSON",
-        success: function(data)
-        {
-            Swal.fire({
-                //title: "Please Check Your Email",
-                text: 'Successfully Update',
-                type: "success",
-                confirmButtonClass: 'button text-white bg-theme-1 shadow-md mr-2',
-                buttonsStyling: false,
-            }).then(function() {
-                var new_url = search_url();
-                orderPageTable.ajax.url(new_url).load(null, false);
-            });
-        }
-      });
-    } 
-}
-
-function OpenPickup(id){
-    $('input[name=pickup_booking_id]').val(id);
+    $('input[name=booking_id]').val(id);
+    $('input[name=status]').val(status);
     $(".label-error").remove();
     $('.input').removeClass('error');
-    $('#pickup_modal').modal('show');
+    $('#agent_modal').modal('show');
 }
 
-function OpenDelivery(id){
-    $('input[name=delivery_booking_id]').val(id);
-    $(".label-error").remove();
-    $('.input').removeClass('error');
-    $('#delivery_modal').modal('show');
-}
-
-function UpdatePickup(){
+function Update(){
   $(".label-error").remove();
   $('.input').removeClass('error');
-  var formData = new FormData($('#pickup_form')[0]);
+  var formData = new FormData($('#agent_form')[0]);
     $.ajax({
-        url : '/admin/update-pickup',
+        url : '/admin/update-booking-status',
         type: "POST",
         data: formData,
         contentType: false,
@@ -259,8 +221,8 @@ function UpdatePickup(){
         dataType: "JSON",
         success: function(data)
         {                
-            $("#pickup_form")[0].reset();
-            $('#pickup_modal').modal('hide');
+            $("#agent_form")[0].reset();
+            $('#agent_modal').modal('hide');
             Swal.fire({
                 //title: "Please Check Your Email",
                 text: 'Successfully Update',
@@ -281,39 +243,5 @@ function UpdatePickup(){
     });
 }
 
-function UpdateDelivery(){
-  $(".label-error").remove();
-  $('.input').removeClass('error');
-  var formData = new FormData($('#delivery_form')[0]);
-    $.ajax({
-        url : '/admin/update-delivery',
-        type: "POST",
-        data: formData,
-        contentType: false,
-        processData: false,
-        dataType: "JSON",
-        success: function(data)
-        {                
-            $("#delivery_form")[0].reset();
-            $('#delivery_modal').modal('hide');
-            Swal.fire({
-                //title: "Please Check Your Email",
-                text: 'Successfully Update',
-                type: "success",
-                confirmButtonClass: 'button text-white bg-theme-1 shadow-md mr-2',
-                buttonsStyling: false,
-            }).then(function() {
-                var new_url = search_url();
-                orderPageTable.ajax.url(new_url).load(null, false);
-            });
-        },error: function (data) {
-            var errorData = data.responseJSON.errors;
-            $.each(errorData, function(i, obj) {
-                $("#"+i).after('<label class="label-error error" for="'+i+'">'+obj[0]+'</label>');
-                $('#'+i).addClass('error');
-            });
-        }
-    });
-}
 </script>
 @endsection

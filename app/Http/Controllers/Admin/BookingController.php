@@ -10,6 +10,7 @@ use App\colour;
 use App\vehicles;
 use App\booking;
 use App\booking_service;
+use App\agent;
 use Yajra\DataTables\Facades\DataTables;
 use Auth;
 use DB;
@@ -26,7 +27,7 @@ class BookingController extends Controller
 
     public function booking(){
         $shop = User::all();
-        $staff = User::where('role_id', '!=' ,'admin')->get();
+        $staff = agent::where('status',0)->get();
         return view('admin.booking',compact('shop','staff'));
     }
     
@@ -49,9 +50,26 @@ class BookingController extends Controller
         return response()->json('Successfully Update');
     }
 
-    public function updatebookingstatus($id,$status){
-        $booking = booking::find($id);
-        $booking->status = $status;
+    public function updatebookingstatus(Request $request){
+        $booking = booking::find($request->booking_id);
+        if($request->status == 1){
+            $booking->status = $request->status;
+            $booking->process_agent_id = $request->update_agent_id;
+            $booking->process_date = date('Y-m-d');
+            $booking->process_time = date('H:i:s');
+        }
+        elseif($request->status == 2){
+            $booking->status = $request->status;
+            $booking->complete_agent_id = $request->update_agent_id;
+            $booking->complete_date = date('Y-m-d');
+            $booking->complete_time = date('H:i:s');
+        }
+        elseif($request->status == 3){
+            $booking->assign_to = 1;
+            $booking->assign_agent_id = $request->update_agent_id;
+            $booking->assign_date = date('Y-m-d');
+            $booking->assign_time = date('H:i:s');
+        }
         $booking->save();
         return response()->json('Successfully Update');
     }
@@ -136,15 +154,54 @@ class BookingController extends Controller
                     return '<td>Paid</td>';
                 }
             })
+            ->addColumn('assign_agent', function ($booking) {
+                $agent = agent::find($booking->assign_agent_id);
+                if(!empty($agent)){
+                return '<td>
+                    <p>Assigned</p>
+                    <p>Agent : '.$agent->name.'</p>
+                    <p>'.$booking->assign_date.' - '.$booking->assign_time.'</p>
+                    </td>';
+                }
+                else{
+                    return '<td>
+                    <p>Not Assigned</p>
+                    </td>';
+                }
+            })
             ->addColumn('status', function ($booking) {
                 if ($booking->status == 0) {
                     return '<td>Booking Accepted</td>';
                 }
                 elseif ($booking->status == 1) {
-                    return '<td>Processing</td>';
+                    $agent = agent::find($booking->process_agent_id);
+                    if(!empty($agent)){
+                    return '<td>
+                    <p>Processing</p>
+                    <p>Agent : '.$agent->name.'</p>
+                    <p>'.$booking->process_date.' - '.$booking->process_time.'</p>
+                    </td>';
+                    }
+                    else{
+                        return '<td>
+                        <p>Processing</p>
+                        </td>';
+                    }
                 }
                 elseif ($booking->status == 2) {
-                    return '<td>Completed</td>';
+                    $agent = agent::find($booking->complete_agent_id);
+                    if(!empty($agent)){
+                    return '<td>
+                    <p>Completed</p>
+                    <p>Agent : '.$agent->name.'</p>
+                    <p>'.$booking->complete_date.' - '.$booking->complete_time.'</p>
+                    </td>';
+                    }
+                    else{
+                        return '<td>
+                        <p>Completed</p>
+                        </td>';
+                    }
                 }
             })
             ->addColumn('booking_date', function ($booking) {
@@ -158,6 +215,12 @@ class BookingController extends Controller
                 if($booking->payment_status == 0){
                     $output.='
                     <a onclick="UpdatePayment('.$booking->id.')" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Paid</a>
+                    ';
+                }
+
+                if($booking->assign_to == 0){
+                    $output.='
+                    <a onclick="UpdateStatus('.$booking->id.',3)" href="#" class="flex items-center block p-2 transition duration-300 ease-in-out bg-white hover:bg-gray-200 rounded-md"> Assign Agent</a>
                     ';
                 }
 
@@ -182,7 +245,7 @@ class BookingController extends Controller
                 </div>';
             })
             
-        ->rawColumns(['customer_details', 'booking_id', 'payment_type','booking_date','total','status','action','payment_status'])
+        ->rawColumns(['customer_details', 'booking_id', 'payment_type','booking_date','total','status','action','payment_status','assign_agent'])
         ->addIndexColumn()
         ->make(true);
 

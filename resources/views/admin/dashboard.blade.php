@@ -81,6 +81,23 @@
                     </div>
                 </div>
             </div>
+                <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+                    <table id="datatable" class="table table-report -mt-2">
+                        <thead>
+                            <tr>
+                                <th class="whitespace-no-wrap">#</th>
+                                <th class="whitespace-no-wrap">Date</th>
+                                <th class="whitespace-no-wrap">Customer Details</th>
+                                <th class="whitespace-no-wrap">Total</th>
+                                <th class="whitespace-no-wrap">Assigned Agent</th>
+                                <th class="whitespace-no-wrap">Status</th>
+                                <th class="whitespace-no-wrap">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
             <!-- END: General Report -->
             <!-- BEGIN: Sales Report -->
             <!-- <div class="col-span-12 lg:col-span-6 mt-8">
@@ -194,6 +211,32 @@
 @section('extra-js')
 <script type="text/javascript">
 $('.dashboard').addClass('side-menu--active');
+
+var orderPageTable = $('#datatable').DataTable({
+    "processing": true,
+    "serverSide": true,
+    //"pageLength": 50,
+    "searching": false, 
+    // "paging": false, 
+    "info": false,
+    "pageLength" : 10,
+    "ajax":{
+        "url": '/admin/get-booking/1/1/status',
+        "dataType": "json",
+        "type": "POST",
+        "data":{ _token: "{{csrf_token()}}"}
+    },
+    "columns": [
+        // { data: 'DT_RowIndex', name: 'DT_RowIndex'},
+        { data: 'booking_id', name: 'booking_id'},
+        { data: 'booking_date', name: 'booking_date' },
+        { data: 'customer_details', name: 'customer_details' },
+        { data: 'total', name: 'total' },
+        { data: 'assign_agent', name: 'assign_agent' },
+        { data: 'status', name: 'status' },
+        { data: 'action', name: 'action' },
+    ]
+});
 </script>
 @endsection
             

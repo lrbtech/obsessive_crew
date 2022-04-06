@@ -195,7 +195,7 @@ function Edit(id){
       $('#save').text('Save Change');
       $('input[name=model_name]').val(data.model_name);
       $('input[name=id]').val(id);
-      $('input[name=brand_id]').val(brand_id);
+      $('input[name=brand_id]').val(data.brand_id);
       action_type = 2;
       $(".label-error").remove();
       $('.input').removeClass('error');

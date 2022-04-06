@@ -103,11 +103,37 @@ class AgentController extends Controller
         }
     }
 
+    public function acceptbooking(Request $request){
+        $booking = booking::find($request->booking_id);
+        if(!empty($booking)){
+            //$booking = booking::find($request->booking_id);
+            $booking->assign_to = 1;
+            $booking->assign_agent_id = $request->agent_id;
+            $booking->assign_date = date('Y-m-d');
+            $booking->assign_time = date('H:i:s');
+            $booking->save();
+
+            return response()->json(['message' => 'Update Successfully'], 200);
+        }else{
+            return response()->json(['message' => 'Booking id not found'], 400);
+        }
+    }
+
     public function updatebookingstatus(Request $request){
         $booking = booking::find($request->booking_id);
         if(!empty($booking)){
             //$booking = booking::find($request->booking_id);
             $booking->status = $request->status;
+            if($request->status == 1){
+                $booking->process_agent_id = $request->agent_id;
+                $booking->process_date = date('Y-m-d');
+                $booking->process_time = date('H:i:s');
+            }
+            elseif($request->status == 2){
+                $booking->complete_agent_id = $request->agent_id;
+                $booking->complete_date = date('Y-m-d');
+                $booking->complete_time = date('H:i:s');
+            }
             $booking->save();
 
             // $booking = booking::find($request->booking_id);
@@ -136,7 +162,7 @@ class AgentController extends Controller
     
     public function gettodaybooking($id){
         $today = date('Y-m-d');
-        $booking = booking::where('date',$today)->orderBy('id','DESC')->get();
+        $booking = booking::where('date',$today)->orderBy('id','DESC')->where('assign_agent_id',$id)->get();
         $data=array();
         $datas=array();
         foreach ($booking as $key => $value) {
@@ -169,6 +195,7 @@ class AgentController extends Controller
                 'vehicle_color'=> $colour->code,
                 'status' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,
@@ -200,7 +227,7 @@ class AgentController extends Controller
 
     public function getpendingbooking($id){
         $today = date('Y-m-d');
-        $booking = booking::where('date','<',$today)->orderBy('id','DESC')->get();
+        $booking = booking::where('date','<',$today)->orderBy('id','DESC')->where('assign_agent_id',$id)->get();
         $data=array();
         $datas=array();
         foreach ($booking as $key => $value) {
@@ -233,6 +260,7 @@ class AgentController extends Controller
                 'vehicle_color'=> $colour->code,
                 'status' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,
@@ -261,7 +289,7 @@ class AgentController extends Controller
 
     public function getupcomingbooking($id){
         $today = date('Y-m-d');
-        $booking = booking::where('booking_date','>',$today)->orderBy('id','DESC')->get();
+        $booking = booking::where('booking_date','>',$today)->orderBy('id','DESC')->where('assign_agent_id',$id)->get();
         $data=array();
         $datas=array();
         foreach ($booking as $key => $value) {
@@ -293,6 +321,7 @@ class AgentController extends Controller
                 'vehicle_color'=> $colour->code,
                 'status' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,
@@ -322,8 +351,8 @@ class AgentController extends Controller
     }
 
 
-    public function getallbooking(){
-        $booking = booking::orderBy('id','DESC')->get();
+    public function getallbooking($id){
+        $booking = booking::orderBy('id','DESC')->where('assign_agent_id',$id)->get();
         $datas =array();
         foreach ($booking as $key => $value) {
             $vehicle = vehicles::find($value->vehicle_id);
@@ -358,7 +387,8 @@ class AgentController extends Controller
     }
 
     public function getbooking($id){
-        $booking = booking::all();
+        // $booking = booking::all();
+        $booking = booking::where('assign_agent_id',$id)->get();
         $data=array();
         $datas=array();
         foreach ($booking as $key => $value) {
@@ -391,6 +421,7 @@ class AgentController extends Controller
                 'vehicle_color'=> $colour->code,
                 'status' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,
@@ -443,7 +474,7 @@ class AgentController extends Controller
 
     public function getbookingcompleted($id){
         $today = date('Y-m-d');
-        $booking = booking::where('status',3)->orderBy('id','DESC')->get();
+        $booking = booking::where('status',3)->orderBy('id','DESC')->where('assign_agent_id',$id)->get();
         $data=array();
         $datas=array();
         foreach ($booking as $key => $value) {
@@ -476,6 +507,7 @@ class AgentController extends Controller
                 'vehicle_color'=> $colour->code,
                 'status' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,
@@ -531,6 +563,7 @@ class AgentController extends Controller
                 'vehicle_no'=> $vehicle->registration_city .' '. $vehicle->registration_code .' '. $vehicle->registration_number,
                 'booking_type' => '',
                 'status_id'=> (int)$value->status,
+                'assign_to'=> (int)$value->assign_to,
                 'address'=> (string)$value->address,
                 'latitude'=> (string)$value->latitude,
                 'longitude'=> (string)$value->longitude,

@@ -133,7 +133,7 @@ Route::group(['prefix' => 'admin'],function(){
     Route::get('/booking-details/{id}', 'Admin\BookingController@bookingdetails');
 
     Route::get('/update-booking-payment/{id}', 'Admin\BookingController@updatebookingpayment');
-    Route::get('/update-booking-status/{booking_id}/{status}', 'Admin\BookingController@updatebookingstatus');
+    Route::POST('/update-booking-status', 'Admin\BookingController@updatebookingstatus');
     Route::POST('/update-pickup', 'Admin\BookingController@updatepickup');
     Route::POST('/update-delivery', 'Admin\BookingController@updatedelivery');
 
