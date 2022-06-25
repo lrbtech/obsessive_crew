@@ -134,6 +134,7 @@ class UserController extends Controller
             $customer->firebase_key = $request->firebase_key;
             $customer->city = $request->city;
             $customer->address = $request->address;
+            $customer->user_unique_id = rand().time();
 
             // $uniqueid=uniqid($randomid, true);
             // $hashing = $request->mobile.$uniqueid;
@@ -171,6 +172,7 @@ class UserController extends Controller
             'last_name'=>$customer->last_name,
             'email'=>$customer->email,
             'mobile'=>$customer->mobile,
+            'user_unique_id'=>$customer->user_unique_id,
             //'token_value'=>$customer->token_value,
             'customer_id'=>$customer->id], 200);
         }catch (\Exception $e) {
@@ -320,6 +322,7 @@ class UserController extends Controller
                 'address'=>$exist[0]->address,
                 'first_name'=>$exist[0]->first_name,
                 'last_name'=> $exist[0]->last_name,
+                'user_unique_id'=>$exist[0]->user_unique_id,
                 //'token_value'=> $exist[0]->token_value,
                 'otp'=>$randomid,
                 'status'=>1], 
@@ -342,6 +345,7 @@ class UserController extends Controller
                 ['message' => 'New Login',
                 'mobile'=>$request->mobile,
                 'otp'=>$randomid,
+                //'user_unique_id'=>$exist[0]->user_unique_id,
                 //'token_value'=> $token_value,
                 'status'=>2], 
             200);
@@ -723,6 +727,7 @@ class UserController extends Controller
     public function getnotification($id){
         $data = push_notification::where('status',1)->where('send_to',2)->get();
         $data1 = push_notification::where('status',1)->where('send_to',4)->get();
+        $datas=array();
         foreach ($data as $key => $value) {
             $data = array(
                 'title' => $value->title,
@@ -1286,7 +1291,7 @@ public function sendNotificationAgent($msg){
         try{
             $config = [
                 'table' => 'bookings',
-                'field' => 'booking_id',
+                'field' => 'patient_id',
                 'length' => 10,
                 'prefix' => 'OC-'
             ];
